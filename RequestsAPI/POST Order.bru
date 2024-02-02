@@ -1,0 +1,24 @@
+meta {
+  name: POST Order
+  type: http
+  seq: 8
+}
+
+post {
+  url: http://localhost:8080/api/orders
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "typePresta" : "IT",
+    "designation" : "Formation Spring Boot",
+    "nbDays" : 3,
+    "unitPrice" : 300,
+    "state" : "CONFIRMED",
+    "client" : {
+      "id" : 1
+    }
+  }
+}
