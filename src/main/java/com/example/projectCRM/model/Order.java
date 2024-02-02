@@ -16,14 +16,12 @@ public class Order {
     private String designation;
     @Column(name = "nb_days")
     private Integer nbDays;
-    @Column(name = "unit_price")
-    private BigDecimal unitPrice;
+    @Column(name = "unit_price", columnDefinition = "numeric")
+    private Double unitPrice;
     @Transient
-    @Column(name = "total_exclude_taxe")
-    private BigDecimal totalExcludeTaxe;
+    private Double totalExcludeTaxe;
     @Transient
-    @Column(name = "total_with_taxe")
-    private BigDecimal totalWithTaxe;
+    private Double totalWithTaxe;
     @Enumerated
     @Column(name = "state")
     private StateOrder state;
@@ -42,7 +40,7 @@ public class Order {
     public Order() {
     }
 
-    public Order(String typePresta, String designation, Integer nbDays, BigDecimal unitPrice, StateOrder state) {
+    public Order(String typePresta, String designation, Integer nbDays, Double unitPrice, StateOrder state) {
         this.typePresta = typePresta;
         this.designation = designation;
         this.nbDays = nbDays;
@@ -82,19 +80,21 @@ public class Order {
         this.nbDays = nbDays;
     }
 
-    public BigDecimal getUnitPrice() {
+    public Double getUnitPrice() {
         return unitPrice;
     }
 
-    public void setUnitPrice(BigDecimal unitPrice) {
+    public void setUnitPrice(Double unitPrice) {
         this.unitPrice = unitPrice;
     }
 
-    public BigDecimal getTotalExcludeTaxe() {
+    public Double getTotalExcludeTaxe() {
+        this.totalExcludeTaxe = this.unitPrice * this.nbDays;
         return totalExcludeTaxe;
     }
 
-    public BigDecimal getTotalWithTaxe() {
+    public Double getTotalWithTaxe() {
+        this.totalWithTaxe = this.getTotalExcludeTaxe() * 1.2;
         return totalWithTaxe;
     }
 
