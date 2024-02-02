@@ -81,7 +81,7 @@ public class OrderController {
     }
 
 //    @PutMapping("orders/{id}")
-//    public ResponseEntity<?> updateOrder(@RequestBody Order order) {
+//    public ResponseEntity<?> updateOrder(@RequestBody Order order, @PathVariable("id") Integer id) {
 //
 //    }
 

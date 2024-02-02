@@ -79,8 +79,11 @@ public class ClientController {
         }
     }
 
-//    @PutMapping("orders/{id}")
-//    public ResponseEntity<?> updateOrder(@RequestBody Order order) {
+//    @PutMapping("clients/{id}")
+//    public ResponseEntity<?> updateClient(@RequestBody Client client, @PathVariable("id") Integer id) {
+//
+//        clientService.update(client);
+//        return ResponseEntity.ok(client);
 //
 //    }
 
