@@ -1,26 +1,26 @@
 meta {
-  name: PUT Client
+  name: POST Client DTO
   type: http
-  seq: 5
+  seq: 4
 }
 
-put {
-  url: http://localhost:8080/api/clients/10
+post {
+  url: http://localhost:8080/api/clients/dto
   body: json
   auth: none
 }
 
 body:json {
   {
-    "companyName" : "",
+    "company" : "Test Company",
     "firstName" : "Dax",
     "lastName" : "Fox",
-    "email" : "t.fox@exemple.com",
+    "email" : "d.fox@exemple.com",
     "phone" : "+33148965231",
     "address" : "55 rue Borie",
-    "zipCode" : "33000",
+    "zip" : "33100",
     "city" : "Bordeaux",
     "country" : "France",
-    "stateClient" : "ACTIVE"
+    "state" : "ACTIVE"
   }
 }

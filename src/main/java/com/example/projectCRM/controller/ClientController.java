@@ -1,7 +1,8 @@
 package com.example.projectCRM.controller;
 
+import com.example.projectCRM.controller.dto.ClientDTO;
+import com.example.projectCRM.controller.dto.ClientMapper;
 import com.example.projectCRM.model.Client;
-import com.example.projectCRM.model.Order;
 import com.example.projectCRM.service.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -18,13 +19,16 @@ public class ClientController {
     private ClientService clientService;
 
     @GetMapping("clients")
-    public List<Client> getAllClients() {
-        return clientService.getAll();
+    public List<ClientDTO> getAllClients() {
+        return clientService.getAll()
+                .stream().map(ClientMapper::toDTO)
+                .toList();
     }
 
     @PostMapping("clients")
     public ResponseEntity<?> save(@RequestBody Client client) {
         List<String> errors = getPostErrors(client);
+
         if(!errors.isEmpty()) {
             return ResponseEntity.badRequest().body(errors.toString());
         }
@@ -34,12 +38,28 @@ public class ClientController {
         }
     }
 
+    @PostMapping("clients/dto")
+    public ResponseEntity<?> save(@RequestBody ClientDTO clientDTO) {
+        Client client = ClientMapper.toEntity(clientDTO);
+        List<String> errors = getPostErrors(client);
+
+        if(!errors.isEmpty()) {
+            return ResponseEntity.badRequest().body(errors.toString());
+        }
+        else {
+            clientService.save(client);
+            ClientDTO response = ClientMapper.toDTO(client);
+            return ResponseEntity.ok(response);
+        }
+    }
+
     @GetMapping("clients/{id}")
     public ResponseEntity<?> getClientById(@PathVariable Integer id) {
         Optional<Client> optional = clientService.getById(id);
 
         if(optional.isPresent()) {
-            return ResponseEntity.ok(optional.get());
+            ClientDTO dto = ClientMapper.toDTO(optional.get());
+            return ResponseEntity.ok(dto);
         }
         else {
             return ResponseEntity.badRequest().body("No existing client with id " + id + " !");
@@ -64,23 +84,23 @@ public class ClientController {
 //
 //    }
 
-    private List<String> getPostErrors(Client client) {
+    private List<String> getPostErrors(Client clientDTO) {
         List<String> errors = new ArrayList<>();
 
-        if(client.getFirstName() == null || client.getFirstName().isBlank()) {
+        if(clientDTO.getFirstName() == null || clientDTO.getFirstName().isBlank()) {
             errors.add("Missing First Name !");
         }
 
-        if(client.getLastName() == null || client.getLastName().isBlank()) {
+        if(clientDTO.getLastName() == null || clientDTO.getLastName().isBlank()) {
             errors.add("Missing Last Name !");
         }
 
-        if(client.getEmail() == null || client.getEmail().isBlank()) {
+        if(clientDTO.getEmail() == null || clientDTO.getEmail().isBlank()) {
             errors.add("Missing Email !");
         }
 
         if(clientService.getAll().stream()
-                .anyMatch(c -> client.getEmail().equals(c.getEmail()))) {
+                .anyMatch(c -> clientDTO.getEmail().equals(c.getEmail()))) {
             errors.add("A client with this email address already exists !");
         }
 

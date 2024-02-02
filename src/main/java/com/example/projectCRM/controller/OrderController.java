@@ -1,6 +1,8 @@
 package com.example.projectCRM.controller;
 
-import com.example.projectCRM.model.Client;
+import com.example.projectCRM.controller.dto.ClientMapper;
+import com.example.projectCRM.controller.dto.OrderDTO;
+import com.example.projectCRM.controller.dto.OrderMapper;
 import com.example.projectCRM.model.Order;
 import com.example.projectCRM.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,13 +20,16 @@ public class OrderController {
     private OrderService orderService;
 
     @GetMapping("orders")
-    public List<Order> getAllOrders() {
-        return orderService.getAll();
+    public List<OrderDTO> getAllOrders() {
+        return orderService.getAll()
+                .stream().map(OrderMapper::toDTO)
+                .toList();
     }
 
     @PostMapping("orders")
     public ResponseEntity<?> save(@RequestBody Order order) {
         List<String> errors = getPostErrors(order);
+
         if(!errors.isEmpty()) {
             return ResponseEntity.badRequest().body(errors.toString());
         }
@@ -34,12 +39,28 @@ public class OrderController {
         }
     }
 
+    @PostMapping("orders/dto")
+    public ResponseEntity<?> save(@RequestBody OrderDTO orderDTO) {
+        Order order = OrderMapper.toEntity(orderDTO);
+        List<String> errors = getPostErrors(order);
+
+        if(!errors.isEmpty()) {
+            return ResponseEntity.badRequest().body(errors.toString());
+        }
+        else {
+            orderService.save(order);
+            OrderDTO response = OrderMapper.toDTO(order);
+            return ResponseEntity.ok(response);
+        }
+    }
+
     @GetMapping("orders/{id}")
     public ResponseEntity<?> getOrderById(@PathVariable Integer id) {
         Optional<Order> optional = orderService.getById(id);
 
         if(optional.isPresent()) {
-            return ResponseEntity.ok(optional.get());
+            OrderDTO dto = OrderMapper.toDTO(optional.get());
+            return ResponseEntity.ok(dto);
         }
         else {
             return ResponseEntity.badRequest().body("No existing order with id " + id + " !");

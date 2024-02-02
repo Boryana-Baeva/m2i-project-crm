@@ -1,0 +1,21 @@
+meta {
+  name: POST Order DTO
+  type: http
+  seq: 10
+}
+
+post {
+  url: http://localhost:8080/api/orders/dto
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "type" : "IT",
+    "designation" : "Formation Spring Boot",
+    "days" : 3,
+    "unitPrice" : 300,
+    "state" : "CONFIRMED"
+  }
+}

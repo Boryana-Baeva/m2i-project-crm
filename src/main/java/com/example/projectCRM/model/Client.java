@@ -127,11 +127,11 @@ public class Client {
         this.country = country;
     }
 
-    public StateClient getStateClient() {
+    public StateClient getState() {
         return state;
     }
 
-    public void setStateClient(StateClient state) {
+    public void setState(StateClient state) {
         this.state = state;
     }
 
