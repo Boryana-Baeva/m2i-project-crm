@@ -29,7 +29,9 @@ public class OrderMapper {
         entity.setState(dto.getState());
         entity.getTotalExcludeTaxe();
         entity.getTotalWithTaxe();
-        //entity.setClient(ClientMapper.toEntity(dto.getClient()));
+
+        if(dto.getClient() != null)
+            entity.setClient(ClientMapper.toEntity(dto.getClient()));
 
         return entity;
     }

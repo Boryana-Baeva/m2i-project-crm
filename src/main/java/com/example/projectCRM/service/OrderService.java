@@ -6,6 +6,7 @@ import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,5 +37,23 @@ public class OrderService {
 
     public void update(Order order) {
         orderRepository.save(order);
+    }
+
+    public List<String> getInputErrors(Order order) {
+        List<String> errors = new ArrayList<>();
+
+        if(order.getTypePresta() == null || order.getTypePresta().isBlank()) {
+            errors.add("Missing Order Type !");
+        }
+
+        if(order.getUnitPrice() == null) {
+            errors.add("Missing Unit Price !");
+        }
+
+        if(order.getNbDays() == null) {
+            errors.add("Missing Number Of Days !");
+        }
+
+        return errors;
     }
 }

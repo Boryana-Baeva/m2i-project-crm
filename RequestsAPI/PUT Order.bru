@@ -1,0 +1,25 @@
+meta {
+  name: PUT Order
+  type: http
+  seq: 12
+}
+
+put {
+  url: http://localhost:8080/api/orders/29
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "id" : 29,
+    "typePresta" : "IT",
+    "designation" : "Formation Spring",
+    "nbDays" : 2,
+    "unitPrice" : 250,
+    "state" : "CONFIRMED",
+    "client" : {
+      "id" : 3
+    }
+  }
+}

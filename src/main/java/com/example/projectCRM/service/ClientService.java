@@ -5,6 +5,7 @@ import com.example.projectCRM.repository.ClientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,6 +36,29 @@ public class ClientService {
 
     public void update(Client client) {
         clientRepository.save(client);
+    }
+
+    public List<String> getInputErrors(Client client, boolean isPostMethod) {
+        List<String> errors = new ArrayList<>();
+
+        if(client.getFirstName() == null || client.getFirstName().isBlank()) {
+            errors.add("Missing First Name !");
+        }
+
+        if(client.getLastName() == null || client.getLastName().isBlank()) {
+            errors.add("Missing Last Name !");
+        }
+
+        if(client.getEmail() == null || client.getEmail().isBlank()) {
+            errors.add("Missing Email !");
+        }
+
+        if(isPostMethod && this.getAll().stream()
+                .anyMatch(c -> client.getEmail().equals(c.getEmail()))) {
+            errors.add("A client with this email address already exists !");
+        }
+
+        return errors;
     }
 
 }

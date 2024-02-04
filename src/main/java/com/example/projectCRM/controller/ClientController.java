@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,7 +27,7 @@ public class ClientController {
 
     @PostMapping("clients")
     public ResponseEntity<?> save(@RequestBody Client client) {
-        List<String> errors = getInputErrors(client, true);
+        List<String> errors = clientService.getInputErrors(client, true);
 
         if(!errors.isEmpty()) {
             return ResponseEntity.badRequest().body(errors.toString());
@@ -42,7 +41,7 @@ public class ClientController {
     @PostMapping("clients/dto")
     public ResponseEntity<?> save(@RequestBody ClientDTO clientDTO) {
         Client client = ClientMapper.toEntity(clientDTO);
-        List<String> errors = getInputErrors(client, true);
+        List<String> errors = clientService.getInputErrors(client, true);
 
         if(!errors.isEmpty()) {
             return ResponseEntity.badRequest().body(errors.toString());
@@ -88,7 +87,7 @@ public class ClientController {
             return ResponseEntity.badRequest().body("ID Mismatch!");
         }
         else {
-            List<String> errors = getInputErrors(client, false);
+            List<String> errors = clientService.getInputErrors(client, false);
 
             if(!errors.isEmpty()) {
                 return ResponseEntity.badRequest().body(errors.toString());
@@ -100,30 +99,6 @@ public class ClientController {
             }
         }
 
-    }
-
-
-    private List<String> getInputErrors(Client clientDTO, boolean isPostMethod) {
-        List<String> errors = new ArrayList<>();
-
-        if(clientDTO.getFirstName() == null || clientDTO.getFirstName().isBlank()) {
-            errors.add("Missing First Name !");
-        }
-
-        if(clientDTO.getLastName() == null || clientDTO.getLastName().isBlank()) {
-            errors.add("Missing Last Name !");
-        }
-
-        if(clientDTO.getEmail() == null || clientDTO.getEmail().isBlank()) {
-            errors.add("Missing Email !");
-        }
-
-        if(isPostMethod && clientService.getAll().stream()
-                .anyMatch(c -> clientDTO.getEmail().equals(c.getEmail()))) {
-            errors.add("A client with this email address already exists !");
-        }
-
-        return errors;
     }
 
 }

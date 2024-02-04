@@ -1,9 +1,9 @@
 package com.example.projectCRM.controller;
 
-import com.example.projectCRM.controller.dto.ClientMapper;
 import com.example.projectCRM.controller.dto.OrderDTO;
 import com.example.projectCRM.controller.dto.OrderMapper;
 import com.example.projectCRM.model.Order;
+import com.example.projectCRM.service.ClientService;
 import com.example.projectCRM.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +18,8 @@ import java.util.Optional;
 public class OrderController {
     @Autowired
     private OrderService orderService;
+    @Autowired
+    private ClientService clientService;
 
     @GetMapping("orders")
     public List<OrderDTO> getAllOrders() {
@@ -28,12 +30,18 @@ public class OrderController {
 
     @PostMapping("orders")
     public ResponseEntity<?> save(@RequestBody Order order) {
-        List<String> errors = getPostErrors(order);
+        List<String> errors = orderService.getInputErrors(order);
 
         if(!errors.isEmpty()) {
             return ResponseEntity.badRequest().body(errors.toString());
         }
         else {
+            if(order.getClient() != null) {
+                // Find the Client by the ID provided in the request
+                // in order to replace the empty Client property with it
+                clientService.getById(order.getClient().getId())
+                        .ifPresent(order::setClient);
+            }
             orderService.save(order);
             return ResponseEntity.ok(order);
         }
@@ -42,7 +50,7 @@ public class OrderController {
     @PostMapping("orders/dto")
     public ResponseEntity<?> save(@RequestBody OrderDTO orderDTO) {
         Order order = OrderMapper.toEntity(orderDTO);
-        List<String> errors = getPostErrors(order);
+        List<String> errors = orderService.getInputErrors(order);
 
         if(!errors.isEmpty()) {
             return ResponseEntity.badRequest().body(errors.toString());
@@ -80,26 +88,30 @@ public class OrderController {
         }
     }
 
-//    @PutMapping("orders/{id}")
-//    public ResponseEntity<?> updateOrder(@RequestBody Order order, @PathVariable("id") Integer id) {
-//
-//    }
-
-    private List<String> getPostErrors(Order order) {
-        List<String> errors = new ArrayList<>();
-
-        if(order.getTypePresta() == null || order.getTypePresta().isBlank()) {
-            errors.add("Missing Order Type !");
+    @PutMapping("orders/{id}")
+    public ResponseEntity<?> updateOrder(@RequestBody Order order, @PathVariable("id") Integer id) {
+        if(!id.equals(order.getId())) {
+            return ResponseEntity.badRequest().body("ID Mismatch!");
         }
+        else {
+            List<String> errors = orderService.getInputErrors(order);
 
-        if(order.getUnitPrice() == null) {
-            errors.add("Missing Unit Price !");
+            if(!errors.isEmpty()) {
+                return ResponseEntity.badRequest().body(errors.toString());
+            }
+            else {
+                if(order.getClient() != null) {
+                    // Find the Client by the ID provided in the request
+                    // in order to replace the empty Client property with it
+                    clientService.getById(order.getClient().getId())
+                                 .ifPresent(order::setClient);
+                }
+
+                orderService.update(order);
+                OrderDTO response = OrderMapper.toDTO(order);
+                return ResponseEntity.ok(response);
+            }
         }
-
-        if(order.getNbDays() == null) {
-            errors.add("Missing Number Of Days !");
-        }
-
-        return errors;
     }
+
 }
