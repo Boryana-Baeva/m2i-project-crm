@@ -36,4 +36,18 @@ public class ClientMapper {
 
         return entity;
     }
+
+    public static ClientUpdateDTO toUpdateDTO(Client client) {
+        ClientUpdateDTO dto = (ClientUpdateDTO)toDTO(client);
+        dto.setId(client.getId());
+
+        return dto;
+    }
+
+    public static Client toUpdateEntity(ClientUpdateDTO dto) {
+        Client entity = toEntity(dto);
+        entity.setId(dto.getId());
+
+        return entity;
+    }
 }

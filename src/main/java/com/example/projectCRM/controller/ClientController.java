@@ -2,6 +2,7 @@ package com.example.projectCRM.controller;
 
 import com.example.projectCRM.controller.dto.ClientDTO;
 import com.example.projectCRM.controller.dto.ClientMapper;
+import com.example.projectCRM.controller.dto.ClientUpdateDTO;
 import com.example.projectCRM.model.Client;
 import com.example.projectCRM.service.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +28,7 @@ public class ClientController {
 
     @PostMapping("clients")
     public ResponseEntity<?> save(@RequestBody Client client) {
-        List<String> errors = getPostErrors(client);
+        List<String> errors = getInputErrors(client, true);
 
         if(!errors.isEmpty()) {
             return ResponseEntity.badRequest().body(errors.toString());
@@ -41,7 +42,7 @@ public class ClientController {
     @PostMapping("clients/dto")
     public ResponseEntity<?> save(@RequestBody ClientDTO clientDTO) {
         Client client = ClientMapper.toEntity(clientDTO);
-        List<String> errors = getPostErrors(client);
+        List<String> errors = getInputErrors(client, true);
 
         if(!errors.isEmpty()) {
             return ResponseEntity.badRequest().body(errors.toString());
@@ -79,15 +80,30 @@ public class ClientController {
         }
     }
 
-//    @PutMapping("clients/{id}")
-//    public ResponseEntity<?> updateClient(@RequestBody Client client, @PathVariable("id") Integer id) {
-//
-//        clientService.update(client);
-//        return ResponseEntity.ok(client);
-//
-//    }
+    @PutMapping("clients/{id}")
+    public ResponseEntity<?> updateClient(@RequestBody ClientUpdateDTO dto, @PathVariable("id") Integer id) {
+        Client client = ClientMapper.toUpdateEntity(dto);
 
-    private List<String> getPostErrors(Client clientDTO) {
+        if(!id.equals(client.getId())) {
+            return ResponseEntity.badRequest().body("ID Mismatch!");
+        }
+        else {
+            List<String> errors = getInputErrors(client, false);
+
+            if(!errors.isEmpty()) {
+                return ResponseEntity.badRequest().body(errors.toString());
+            }
+            else {
+                clientService.update(client);
+                ClientDTO response = ClientMapper.toDTO(client);
+                return ResponseEntity.ok(response);
+            }
+        }
+
+    }
+
+
+    private List<String> getInputErrors(Client clientDTO, boolean isPostMethod) {
         List<String> errors = new ArrayList<>();
 
         if(clientDTO.getFirstName() == null || clientDTO.getFirstName().isBlank()) {
@@ -102,7 +118,7 @@ public class ClientController {
             errors.add("Missing Email !");
         }
 
-        if(clientService.getAll().stream()
+        if(isPostMethod && clientService.getAll().stream()
                 .anyMatch(c -> clientDTO.getEmail().equals(c.getEmail()))) {
             errors.add("A client with this email address already exists !");
         }
