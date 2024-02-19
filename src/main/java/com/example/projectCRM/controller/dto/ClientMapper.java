@@ -6,6 +6,7 @@ public class ClientMapper {
     public static ClientDTO toDTO(Client client) {
         ClientDTO dto = new ClientDTO();
 
+        dto.setId(client.getId());
         dto.setCompany(client.getCompanyName());
         dto.setFirstName(client.getFirstName());
         dto.setLastName(client.getLastName());
@@ -23,6 +24,7 @@ public class ClientMapper {
     public static Client toEntity(ClientDTO dto) {
         Client entity = new Client();
 
+        entity.setId(dto.getId());
         entity.setCompanyName(dto.getCompany());
         entity.setFirstName(dto.getFirstName());
         entity.setLastName(dto.getLastName());

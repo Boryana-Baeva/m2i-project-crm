@@ -4,6 +4,7 @@ import com.example.projectCRM.model.Client;
 import com.example.projectCRM.model.StateOrder;
 
 public class OrderDTO {
+    private Integer id;
     private String type;
     private String designation;
     private Integer days;
@@ -27,6 +28,28 @@ public class OrderDTO {
         this.totalPriceAfterTaxes = totalPriceAfterTaxes;
         this.state = state;
         this.client = client;
+    }
+
+    public OrderDTO(Integer id, String type, String designation,
+                    Integer days, Double unitPrice, Double totalPriceBeforeTaxes,
+                    Double totalPriceAfterTaxes, StateOrder state, ClientDTO client) {
+        this.id = id;
+        this.type = type;
+        this.designation = designation;
+        this.days = days;
+        this.unitPrice = unitPrice;
+        this.totalPriceBeforeTaxes = totalPriceBeforeTaxes;
+        this.totalPriceAfterTaxes = totalPriceAfterTaxes;
+        this.state = state;
+        this.client = client;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getType() {

@@ -6,6 +6,7 @@ public class OrderMapper {
     public static OrderDTO toDTO(Order entity) {
         OrderDTO dto = new OrderDTO();
 
+        dto.setId(entity.getId());
         dto.setType(entity.getTypePresta());
         dto.setDesignation(entity.getDesignation());
         dto.setDays(entity.getNbDays());
@@ -22,6 +23,7 @@ public class OrderMapper {
     public static Order toEntity(OrderDTO dto) {
         Order entity = new Order();
 
+        entity.setId(dto.getId());
         entity.setTypePresta(dto.getType());
         entity.setDesignation(dto.getDesignation());
         entity.setNbDays(dto.getDays());

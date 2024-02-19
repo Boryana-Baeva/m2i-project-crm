@@ -2,7 +2,6 @@ package com.example.projectCRM.controller;
 
 import com.example.projectCRM.controller.dto.ClientDTO;
 import com.example.projectCRM.controller.dto.ClientMapper;
-import com.example.projectCRM.controller.dto.ClientUpdateDTO;
 import com.example.projectCRM.model.Client;
 import com.example.projectCRM.service.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,8 +79,8 @@ public class ClientController {
     }
 
     @PutMapping("clients/{id}")
-    public ResponseEntity<?> updateClient(@RequestBody ClientUpdateDTO dto, @PathVariable("id") Integer id) {
-        Client client = ClientMapper.toUpdateEntity(dto);
+    public ResponseEntity<?> updateClient(@RequestBody ClientDTO dto, @PathVariable("id") Integer id) {
+        Client client = ClientMapper.toEntity(dto);
 
         if(!id.equals(client.getId())) {
             return ResponseEntity.badRequest().body("ID Mismatch!");

@@ -3,6 +3,7 @@ package com.example.projectCRM.controller.dto;
 import com.example.projectCRM.model.StateClient;
 
 public class ClientDTO {
+    private Integer id;
     private String company;
     private String firstName;
     private String lastName;
@@ -30,6 +31,31 @@ public class ClientDTO {
         this.city = city;
         this.country = country;
         this.state = state;
+    }
+
+    public ClientDTO(Integer id, String company, String firstName,
+                     String lastName, String email, String phone,
+                     String address, String zip, String city,
+                     String country, StateClient state) {
+        this.id = id;
+        this.company = company;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.phone = phone;
+        this.address = address;
+        this.zip = zip;
+        this.city = city;
+        this.country = country;
+        this.state = state;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getCompany() {
